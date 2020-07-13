@@ -1,0 +1,7 @@
+{
+  "name": "ionic-sqlite-versioning",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
