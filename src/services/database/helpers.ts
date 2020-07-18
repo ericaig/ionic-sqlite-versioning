@@ -13,36 +13,27 @@ export class DatabaseHelpersService {
 
     constructor() { }
 
-    public set setDbConnectionObject(sqliteObj: SQLiteObject){
+    public set setDbConnectionObject(sqliteObj: SQLiteObject) {
         this.sqliteObj = sqliteObj
     }
 
     public async batch(statements: string[]): Promise<any> {
-        // validate.defined(this.sqlite, 'Database driver')
-        // validate.array(statements, 'Database statements')
-
         return this.sqliteObj.sqlBatch(statements)
     }
 
     public async execute(statement: string, values: any[]): Promise<any> {
-        // validate.defined(this.sqlite, 'Database driver')
-        // validate.string(statement, 'Database statement')
-        // validate.array(values, 'Database statement values')
-
         return this.sqliteObj.executeSql(statement, values)
     }
 
     public async query(statement: string, values: any[], debug = true): Promise<any> {
-        // validate.defined(this.sqlite, 'Database driver')
-        // validate.string(statement, 'Database statement')
-        // validate.array(values, 'Database statement values')
-
         let result = null
 
         return this.execute(statement, values || [])
             .then((res: { insertedId: number, rows: { item: (i: number) => {}, length: number }, rowsAffected: number, changes: 1 | 0, values: any[] }) => {
                 // console.log('query statement', statement)
                 // console.log('query result', res)
+
+                // TODO - return only sqlite response after executing
 
                 res.changes = 1
 
@@ -74,17 +65,12 @@ export class DatabaseHelpersService {
 
     // Create one
     public async insert(table: string, fields: object) {
-        // validate.string(table, 'Insert table')
-        // validate.object(fields, 'Insert fields')
-
-        // validate.truthy(Object.keys(fields).length > 0, 'Longitud de propeitats inserir bd')
-
         const keys = Object.keys(fields).join(', ')
         const values = Object.values(fields)
         const questionMarks = []
         questionMarks.length = values.length
 
-        // TODO - return insertedId after insert - has to update capacitor-sqlite plugin to achieve this
+        // TODO - return insertedId after insert
 
         const statement = `INSERT INTO ${table} (${keys}) VALUES (${questionMarks.fill(' ? ').join(', ')})`
 
@@ -109,13 +95,10 @@ export class DatabaseHelpersService {
 
     // Create many
     public async insertMany(table: string, fieldsValuesPairs: any[]) {
-        // validate.string(table, 'Insert table')
-        // validate.array(fieldsValuesPairs, 'Insert values')
-
-        // validate.truthy(fieldsValuesPairs.length > 0, 'Longitud de valor inserir bd')
-
         // return Promise.resolve().then(() => {
         // let promises = Promise.resolve()
+
+        // TODO - use batch insert instead ?
         const promises = []
         const statements = []
 
@@ -144,9 +127,6 @@ export class DatabaseHelpersService {
 
     // Read one
     public async get(table: string, where: object, sort: DbSortInterface = {}) {
-        // validate.string(table, 'Taula actualització bd')
-        // validate.object(where, 'Camps identificar buscar bd')
-
         let whereKeyValuePairs = Object.keys(where).map(key => `${key} = ?`).join(' AND ')
         whereKeyValuePairs = !!whereKeyValuePairs ? ` AND ${whereKeyValuePairs}` : ''
 
@@ -192,9 +172,6 @@ export class DatabaseHelpersService {
 
     // Read many
     public async getMany(table: string, where: object = {}, sort: DbSortInterface = {}, limit: DbLimitInterface = {}) {
-        // validate.string(table, 'Taula actualització bd')
-        // validate.object(where, 'Camps identificar buscar bd')
-
         let whereKeyValuePairs = Object.keys(where).map(key => `${key} = ?`).join(' AND ')
         whereKeyValuePairs = !!whereKeyValuePairs ? ` AND ${whereKeyValuePairs}` : ''
 
@@ -236,9 +213,6 @@ export class DatabaseHelpersService {
 
     // Search and Read many
     public async search(table: string, where: object = {}, whereConjuction: 'AND' | 'OR' = 'OR', sort: DbSortInterface = {}, limit: DbLimitInterface = {}) {
-        // validate.string(table, 'Taula actualització bd')
-        // validate.object(where, 'Camps identificar buscar bd')
-
         let whereKeyValuePairs = Object.keys(where).map(key => `${key} like '%${where[key]}%'`).join(` ${whereConjuction} `)
         whereKeyValuePairs = !!whereKeyValuePairs ? ` AND (${whereKeyValuePairs})` : ''
 
@@ -276,14 +250,6 @@ export class DatabaseHelpersService {
 
     // Update one
     public async update(table: string, where: object, props: object) {
-        // validate.string(table, 'Taula actualització bd')
-
-        // validate.object(where, 'Camps identificar actualització bd')
-        // validate.truthy(Object.keys(where).length > 0, `Longitud de propeitats d'identificació actualització bd`)
-
-        // validate.object(props, 'Camps actualització bd')
-        // validate.truthy(Object.keys(props).length > 0, 'Longitud de propeitats actualització bd')
-
         const whereKeyValuePairs = Object.keys(where).map(key => `${key} = ?`).join(' AND ')
         const updateKeyValuePairs = Object.keys(props).map(key => `${key} = ?`).join(', ')
 
@@ -304,10 +270,6 @@ export class DatabaseHelpersService {
 
     // Delete one
     public async delete(table: string, where: object) {
-        // validate.string(table, 'Taula eliminar registre bd')
-
-        // validate.object(where, 'Camps identificar actualització bd')
-        // // validate.truthy(Object.keys(where).length > 0, `Longitud de propeitats d'identificació actualització bd`)
         // const whereKeyValuePairs = Object.keys(where).map(key => `${key} = ${where[key]}`).join(' AND ')
 
         let whereKeyValuePairs = Object.keys(where).map(key => `${key} = ${where[key]}`).join(' and ')
@@ -336,14 +298,8 @@ export class DatabaseHelpersService {
     // }
 
     public async addColumn(table: string, column: DbColumnTypeInterface) {
-        // validate.string(table, 'Taula modificar')
-        // validate.object(column, 'Columna nova')
-
         const [columnName] = Object.keys(column)
         const type = column[columnName]
-
-        // validate.string(columnName, 'Columna nova')
-        // validate.string(type, 'Tipus columna nova')
 
         const statement = `ALTER TABLE ${table} ADD COLUMN ${columnName} ${type}`
 
