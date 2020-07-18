@@ -7,14 +7,14 @@ export default [
         createdAt INTEGER,
         updatedAt INTEGER
     )`,
-    `CREATE TABLE IF NOT EXISTS user(
+    `CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         surname TEXT,
         email TEXT,
         username TEXT,
         language TEXT,
-        dateOfBirth INTEGER,
+        dateOfBirth TEXT,
         lastLoggedIn INTEGER
     )`,
 ]
