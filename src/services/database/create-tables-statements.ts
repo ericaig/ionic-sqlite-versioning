@@ -3,7 +3,6 @@ export default [
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         version INTEGER,
-        settings TEXT DEFAULT NULL,
         createdAt INTEGER,
         updatedAt INTEGER
     )`,
