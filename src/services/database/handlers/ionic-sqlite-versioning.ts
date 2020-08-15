@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
-import DbColumnTypeInterface from 'src/services/interfaces/db-column-type'
 import { DatabaseHelpersService } from '../helpers'
 import IonicSqliteDbVersioningInterface from 'src/services/interfaces/ionic-sqlite-versioning'
+import AddColumnToTableOptionsInterface from 'src/services/interfaces/db-add-column-options'
 
 const __table__ = 'ionicSqliteVersioning'
 
@@ -36,8 +36,8 @@ export class IonicSqliteDbVersioningService {
             .then(() => { })
     }
 
-    public async addColumn(table: string, columnType: DbColumnTypeInterface) {
-        return this.dbHelpers.addColumn(table, columnType)
+    public async addColumn(table: string, options: AddColumnToTableOptionsInterface) {
+        return this.dbHelpers.addColumn(table, options)
         .then(() => { })
     }
 
