@@ -4,6 +4,7 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { DatabaseConnectionService } from 'src/services/database/connection';
+import { IonicSqliteDbVersioningProvider } from 'src/providers/ionic-sqlite-versioning';
 
 @Component({
   selector: 'app-root',
@@ -15,17 +16,24 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private dbConnection: DatabaseConnectionService
+    private dbConnection: DatabaseConnectionService,
+    private ionicSqliteVersioningProvider: IonicSqliteDbVersioningProvider
   ) {
     this.initializeApp();
   }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
+  private async initializeApp() {
+    try {
+      await this.platform.ready()
+
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
-      this.dbConnection.initialize()
-    });
+      await this.dbConnection.initialize()
+
+      await this.ionicSqliteVersioningProvider.upgrade()
+    } catch (error) {
+      console.error(error)
+    }
   }
 }

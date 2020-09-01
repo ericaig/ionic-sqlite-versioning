@@ -26,19 +26,19 @@ export class IonicSqliteDbVersioningService {
     // CRUD
 
     public async create(props: IonicSqliteDbVersioningInterface) {
-        const { name, version } = props
+        const { version } = props
 
         const createdAt = this.timestamp
 
-        return this.delete().then(() =>
-            this.dbHelpers.insert(__table__, { name, version, settings: '', createdAt })
-        )
+        await this.delete()
+
+        return this.dbHelpers.insert(__table__, { version, createdAt })
             .then(() => { })
     }
 
     public async addColumn(table: string, options: AddColumnToTableOptionsInterface) {
         return this.dbHelpers.addColumn(table, options)
-        .then(() => { })
+            .then(() => { })
     }
 
     public async read() {

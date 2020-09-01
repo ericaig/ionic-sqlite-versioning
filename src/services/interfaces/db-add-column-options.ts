@@ -1,7 +1,5 @@
 // https://www.sqlite.org/datatype3.html
 
-import DbColumnTypeInterface from './db-column-type';
-
 /**
  * https://www.sqlitetutorial.net/sqlite-alter-table/
  *
@@ -17,12 +15,15 @@ import DbColumnTypeInterface from './db-column-type';
 export default interface AddColumnToTableOptionsInterface {
     name: string,
 
-    type: DbColumnTypeInterface,
+    type: 'TEXT' | 'text' | 'INTEGER' | 'integer' | 'NULL' | 'null' | 'REAL' | 'real' | 'BLOB' | 'blob',
 
     /**
      * The default value for the field to add
      */
     defaultValue?: string | number,
 
+    /**
+     * Indicates if the new field is nullable or NOT
+     */
     isNullable?: boolean
 }

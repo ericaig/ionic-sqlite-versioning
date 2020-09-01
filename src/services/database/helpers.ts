@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
 import { SQLiteObject } from '@ionic-native/sqlite/ngx';
-import DbColumnTypeInterface from '../interfaces/db-column-type';
 import DbLimitInterface from '../interfaces/db-limit';
 import DbSortInterface from '../interfaces/db-sort';
 import AddColumnToTableOptionsInterface from '../interfaces/db-add-column-options';
@@ -313,20 +312,38 @@ export class DatabaseHelpersService {
     // }
 
     public async addColumn(table: string, options: AddColumnToTableOptionsInterface) {
-        if (typeof table !== 'string') throw new Error(`'string' was expected for table name got '${typeof table}' instead`)
-        if (typeof options !== 'object') throw new Error(`'object' was expected for options value got '${typeof options}' instead`)
+        if (typeof table !== 'string') throw new Error(`'string' was expected for table name but got '${typeof table}' instead`)
+        if (typeof options !== 'object') throw new Error(`'object' was expected for options value but got '${typeof options}' instead`)
 
         if (!options.hasOwnProperty('name')) throw new Error(`Please specify a name for the new field to add to '${table}' table`)
-        if (typeof options.name !== 'string') throw new Error(`'string' was expected for field name got '${typeof options.name}' instead`)
+        if (typeof options.name !== 'string') throw new Error(`'string' was expected for field name but got '${typeof options.name}' instead`)
 
         if (!options.hasOwnProperty('type')) throw new Error(`Please specify the type of field '${options.name}' is`)
-        if (typeof options.type !== 'string') throw new Error(`'string' was expected for the type of field '${options.name}' is got '${typeof options.type}' instead`)
+        if (typeof options.type !== 'string') throw new Error(`'string' was expected for the type of field '${options.name}' but got '${typeof options.type}' instead`)
 
-        const { name, type } = options
+        const { name, type, defaultValue, isNullable } = options
+        let defaultStatement = ''
+        let nullableStatement = ''
 
-        // TODO: continue from here.. implement other properties from options value
+        if (options.hasOwnProperty('defaultValue')) {
+            // TODO - check if => Eric's car => works as a default value
+
+            if (!['string', 'number'].includes(typeof defaultValue)) throw new Error(`Expected the default value for field '${options.name}' to be 'string' or 'number' but got '${typeof defaultValue}' instead`)
+
+            defaultStatement = ` DEFAULT ${typeof defaultValue === 'string' ? `'${defaultValue}'` : defaultValue}`
+        }
+
+        if (options.hasOwnProperty('isNullable')) {
+            if (typeof defaultValue !== 'boolean') throw new Error(`Expected isNullable property for field '${options.name}' to be 'boolean' but got '${typeof isNullable}' instead`)
+
+            if (options.hasOwnProperty('defaultValue')) throw new Error(`Can't have isNullable and defaultValue properties set for the same field`)
+
+            nullableStatement = isNullable ? ' NULL' : ' NOT NULL'
+        }
 
         // ALTER TABLE equipment ADD COLUMN location text DEFAULT 0;
-        const statement = `ALTER TABLE ${table} ADD COLUMN ${name} ${type} DEFAULT null`
+        const statement = `ALTER TABLE ${table} ADD COLUMN ${name} ${type}${defaultStatement}${nullableStatement}`
+
+        return this.execute(statement, [])
     }
 }

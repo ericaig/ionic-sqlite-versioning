@@ -1,8 +1,7 @@
 export default interface IonicSqliteDbVersioningInterface {
     id?: number,
-    name: string,
+    name?: string,
     version: number,
-    settings?: string,
     createdAt?: number,
     updatedAt?: number,
 }

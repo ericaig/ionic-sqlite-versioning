@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+// import { IonicSqliteDbVersioningProvider } from 'src/providers/ionic-sqlite-versioning';
 
 @Component({
   selector: 'app-home',
@@ -7,10 +8,16 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() { }
+  constructor(
+    // private ionicSqliteVersioningProvider: IonicSqliteDbVersioningProvider
+  ) { }
 
-  public doSomethingButtonAction() {
-    
+  public async doSomethingButtonAction() {
+    try {
+      // await this.ionicSqliteVersioningProvider.upgrade()
+    } catch (error) {
+      console.error(error)
+    }
   }
 
 }
